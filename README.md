@@ -6,11 +6,8 @@ This automation is a **fully governed, approval-driven onboarding solution** tha
 
 The process begins when a ServiceNow ticket meets predefined conditions (state, description, assignment group). Once triggered, the automation performs **end-to-end validation, data enrichment, and identity preparation**.
 
-Instead of directly creating accounts, the automation calls the **Adaxes API** to create a provisioning request. This request is placed in a controlled state:
+Instead of directly creating accounts, the automation calls the **Adaxes API** to create a provisioning request. This request is placed in a controlled state: WAITING FOR APPROVAL
 
-```text
-WAITING FOR APPROVAL
-```
 
 The request requires **manager approval**, ensuring proper governance and access control.
 
@@ -70,6 +67,204 @@ If conditions are not satisfied → ticket is skipped
 ---
 
 ## 🔁 End-to-End Flow
+
+START
+  │
+  ▼
+Initialize Globals
+  │
+  ▼
+Load Config (config.yaml)
+  │
+  ├── ❌ If config invalid → EXIT
+  │
+  ▼
+Fetch Tickets (ServiceNow)
+  │
+  ├── ❌ If API Error → Log + EXIT
+  ├── ⚠️ If No Tickets → END
+  │
+  ▼
+FOR EACH TICKET
+  │
+  ▼
+Extract Ticket Details
+  │
+  ▼
+Fetch Ticket Variables
+  │
+  ├── ❌ If Error → Set var_error_message → CONTINUE (next ticket)
+  │
+  ▼
+Map Variables → Global State
+  │
+  ▼
+Log Ticket + Variables
+  │
+  ▼
+Set Context:
+(New Hire Request / Windows Account Creation)
+  │
+  ▼
+Update Ticket → "IN PROGRESS"
+  │
+  ├── ❌ If Failed → STOP PROCESSING THIS TICKET
+  │
+  ▼
+Register Tracker → WAITING_FOR_APPROVAL
+  │
+  ├── ❌ If Failed → Reassign to Frida → STOP
+  │
+  ▼
+Fetch Manager Data
+  │
+  ├── ❌ If Failed → Set Error (continue flow but risky)
+  │
+  ▼
+Fetch Department (ServiceNow)
+  │
+  ├── ❌ If Failed → Set Error
+  │
+  ▼
+Fetch Department Name (AD)
+  │
+  ├── ❌ If Failed → Set Error
+  │
+  ▼
+Fetch Office (Location)
+  │
+  ├── ❌ If Failed → Set Error
+  │
+  ▼
+Validate Employee ID
+  │
+  ▼
+Normalize Names
+  │
+  ▼
+Generate SAM Account
+  │
+  ▼
+Fetch OU (Org Unit)
+  │
+  ├── ❌ If Failed → Set Error
+  │
+  ▼
+EMPLOYEE TYPE LOGIC
+  │
+  ├── If HMSHost Associate
+  │       ├── If Employee ID missing → Fetch from SNOW
+  │       └── If still empty → set = '0'
+  │
+  ├── If Applicant
+  │       └── Set Consulting Company
+  │
+  └── Else
+          ├── Validate Consulting Company
+          └── ❌ If invalid → Set Error
+  │
+  ▼
+Generate Email ID
+  │
+  ├── ❌ If Invalid (no @) → Set Error
+  │
+  ▼
+Mailbox Required?
+  │
+  ├── Yes → Set flag
+  └── No → Continue
+  │
+  ▼
+Check AD Account Exists
+  │
+  ├── ❌ If Error → Set Error
+  │
+  ▼
+ACCOUNT DECISION TREE
+  │
+  ├── ✅ IF ACCOUNT EXISTS
+  │       │
+  │       ├── If ENABLED
+  │       │       │
+  │       │       ├── Check Password + Groups
+  │       │       │
+  │       │       ├── ❌ If Error → Reassign → STOP
+  │       │       │
+  │       │       ├── If OK
+  │       │       │       → Close Ticket
+  │       │       │       → Tracker = PROCESSED
+  │       │       │       → STOP
+  │       │
+  │       └── If DISABLED
+  │               → Close Ticket
+  │               → Reassign to Security
+  │               → STOP
+  │
+  └── ❌ IF ACCOUNT DOES NOT EXIST
+          → Continue Flow
+  │
+  ▼
+Duplicate Validation (Email)
+  │
+  ├── ❌ If Invalid + Account Exists → Reassign → STOP
+  │
+  ▼
+Generate Password
+  │
+  ├── ❌ If Failed → Set Error
+  │
+  ▼
+GLOBAL ERROR CHECKPOINT 🚨
+  │
+  ├── ❌ If ANY Error Exists
+  │       │
+  │       ├── Update Tracker → REQUEST_FAILED
+  │       ├── Reassign to Security
+  │       └── STOP
+  │
+  ▼
+Register Tracker Again → WAITING_FOR_APPROVAL
+  │
+  ├── ❌ If Failed → Reassign → STOP
+  │
+  ▼
+Prepare Adaxes Request (HTML Body)
+  │
+  ▼
+Send Email Notification
+  │
+  ▼
+Update Ticket (with request details)
+  │
+  ▼
+Create AD Account (Adaxes)
+  │
+  ├── ❌ If Failed
+  │       → Reassign to Security
+  │       → STOP
+  │
+  ▼
+Update Tracker → WAITING_FOR_APPROVAL
+  │
+  ├── ❌ If Failed → Reassign → STOP
+  │
+  ▼
+Update Ticket → "Waiting for Approval"
+  │
+  ▼
+Send Final Email
+  │
+  ▼
+LOG SUCCESS
+  │
+  ▼
+Apply Delay
+  │
+  ▼
+NEXT TICKET
+  │
+  ▼
+END
 
 ### 1. Initialization
 
