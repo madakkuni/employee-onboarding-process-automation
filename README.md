@@ -70,7 +70,12 @@ If conditions are not satisfied → ticket is skipped
 
 <img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/0ec40615-57cd-4f2b-beae-78651d039087" />
 <img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/8cdd4344-e3da-4380-a761-e38484229e0b" />
-
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/197067ba-0041-4d34-a579-1654a87bf2d1" />
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/c3336e0d-37f8-4e81-983e-8486d975ad34" />
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/2cf18b09-1086-4370-b154-aeffc4775848" />
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/9958a043-c377-4c58-a882-f32237ffa714" />
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/2be076a1-53d9-4e2e-bb6c-39a15c5779e6" />
+<img width="392" height="112" alt="image" src="https://github.com/user-attachments/assets/3b6dc6c4-8861-42fc-bb85-7fc5a5f9cf75" />
 
 ### 1. Initialization
 
