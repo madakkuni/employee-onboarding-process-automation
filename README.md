@@ -69,6 +69,8 @@ If conditions are not satisfied → ticket is skipped
 ## 🔁 End-to-End Flow
 
 <img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/0ec40615-57cd-4f2b-beae-78651d039087" />
+<img width="392" height="413" alt="image" src="https://github.com/user-attachments/assets/8cdd4344-e3da-4380-a761-e38484229e0b" />
+
 
 ### 1. Initialization
 
