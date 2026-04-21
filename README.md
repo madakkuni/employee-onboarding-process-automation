@@ -1,4 +1,4 @@
-# 🚀 Employee Onboarding Process Automation — Windows Account Creation
+# 🚀 Employee Onboarding Process Automation
 
 ## 📌 Overview
 
