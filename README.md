@@ -2,8 +2,6 @@
 
 ## 📌 Overview
 
-**Automation Name:** Employee Onboarding Process Automation
-
 This automation is a **fully governed, approval-driven onboarding solution** that provisions employee accounts in Active Directory through Adaxes, triggered by ServiceNow tickets.
 
 The process begins when a ServiceNow ticket meets predefined conditions (state, description, assignment group). Once triggered, the automation performs **end-to-end validation, data enrichment, and identity preparation**.
